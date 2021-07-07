@@ -1,6 +1,6 @@
 <?php
 
-require_once('libraries/database.php');
+namespace Models;
 
 abstract class Model
 {
@@ -9,7 +9,7 @@ abstract class Model
 
     public function __construct()
     {
-        $this->pdo = getPdo();
+        $this->pdo = \Database::getPdo();
     }
 
     public function find(int $id)
@@ -40,5 +40,13 @@ abstract class Model
         // On fouille le résultat pour en extraire les données réelles
         $items = $resultats->fetchAll();
         return $items;
+    }
+
+    public function findAllWithArticle(int $article_id)
+    {
+        $query = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE article_id =:article_id");
+        $query->execute(['article_id' => $article_id]);
+        $commentaires = $query->fetchAll();
+        return $commentaires;
     }
 }
